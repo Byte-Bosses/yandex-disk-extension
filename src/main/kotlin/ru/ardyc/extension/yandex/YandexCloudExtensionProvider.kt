@@ -22,11 +22,7 @@ class YandexCloudExtensionProvider : InformationProvider {
     private val mapper = YamlTextMapper.default(this::class.java)
 
     override fun initialize() {
-
-        val httpServiceProxyFactory = HttpServiceProxyFactory
-            .builderFor(WebClientAdapter.create(createWebClient()))
-            .build()
-        client = httpServiceProxyFactory.createClient(YandexDiskClient::class.java)
+        client = YandexDiskClient("https://cloud-api.yandex.net/v1/disk/public/resources", createWebClient())
     }
 
     override fun isSupported(uri: URI): Boolean {

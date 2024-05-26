@@ -1,11 +1,16 @@
 package ru.ardyc.extension.yandex.client
 
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.service.annotation.GetExchange
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.reactive.function.client.WebClient
 import ru.ardyc.extension.yandex.model.YandexDiskResponse
 
-interface YandexDiskClient {
+class YandexDiskClient(private val baseUrl: String, private val webClient: WebClient) {
 
-    @GetExchange("/v1/disk/public/resources?public_key={path}")
-    fun getInfo(@PathVariable path: String): YandexDiskResponse
+    fun getInfo(@RequestParam("public_key") path: String): YandexDiskResponse {
+        return webClient.get()
+            .uri("$baseUrl?public_key=$path")
+            .retrieve()
+            .bodyToMono(YandexDiskResponse::class.java)
+            .block()!!
+    }
 }
